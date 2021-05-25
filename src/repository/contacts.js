@@ -1,39 +1,55 @@
 
-const { v4: uuid } = require('uuid')
-const db = require('../db')
+const { ObjectID } = require('mongodb')
 
 class ContactsRepository {
-  listContacts() {
-    return db.get('contacts').value()
+  constructor(client) {
+    this.collection = client.db().collection('GoItCollection')
   }
 
-  getContactById(id) {
-    return db.get('contacts').find({ id }).value()
+  async listContacts() {
+    const results = await this.collection.find({}).toArray()
+    return results
   }
 
-  addContact(body) {
-    const id = uuid()
-    const newContact = {
-      id,
+  async getContactById(id) {
+    const objectID = ObjectID(id)
+    const [result] = await this.collection.find({ _id: objectID }).toArray()
+    return result
+  }
+
+  async addContact(body) {
+    const record = {
       ...body,
+      ...(body.favorite ? {} : { favorite: false })
     }
-
-    db.get('contacts').push(newContact).write()
+    const { ops: [newContact], } = await this.collection.insertOne(record)
 
     return newContact
   }
 
-  updateContact(id, body) {
-    const changedContact = db.get('contacts').find({ id }).assign(body).value()
-
-    db.write()
-
-    return changedContact
+  async updateContact(id, body) {
+    const objectID = ObjectID(id)
+    const { value: updatedClient } = await this.collection.findOneAndUpdate({ _id: objectID },
+      { $set: body },
+      { returnOriginal: false }
+    )
+    return updatedClient
   }
 
-  removeContact(id) {
-    const [contact] = db.get('contacts').remove({ id }).write()
-    return contact
+  async removeContact(id) {
+    const objectID = ObjectID(id)
+    const { value: removedClient } = await this.collection.findOneAndDelete({ _id: objectID },
+    )
+    return removedClient
+  }
+
+  async updateStatusContact(id, body) {
+    const objectID = ObjectID(id)
+    const { value: updatedClient } = await this.collection.findOneAndUpdate({ _id: objectID },
+      { $set: body },
+      { returnOriginal: false }
+    )
+    return updatedClient
   }
 }
 
