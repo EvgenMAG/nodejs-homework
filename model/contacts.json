@@ -20,9 +20,9 @@
     },
     {
       "id": "5",
-      "name": "Chun Duh Van",
+      "name": "Berezovskiy Duh Van",
       "email": "ante@yahoo.uk",
-      "phone": "(843) 914-3872"
+      "phone": "(854) 914-3872"
     },
     {
       "id": "6",
@@ -55,12 +55,6 @@
       "phone": "(992) 914-3872"
     },
     {
-      "id": "3e03c479-78a1-41ef-a1f7-902635cc88a7",
-      "name": "Leha Pupkinaaaa",
-      "email": "lehaaaa.forever@yahoo.uk",
-      "phone": "(044) 034-3792"
-    },
-    {
       "id": "1cf8136c-a652-4bc9-a471-8fccc92c1f83",
       "name": "Chun Duh Van",
       "email": "ante@yahoo.uk",
@@ -71,6 +65,12 @@
       "name": "Chun Duh Van",
       "email": "ante@yahoo.uk",
       "phone": "(743) 914-3872"
+    },
+    {
+      "id": "5e7457e4-d764-4f62-b170-fb542d519ef2",
+      "name": "Van Dam",
+      "email": "van@yahoo.uk",
+      "phone": "(734) 914-3872"
     }
   ]
 }
