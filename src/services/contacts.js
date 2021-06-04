@@ -1,5 +1,5 @@
 
-const ContactsRepository = require('../repository')
+const { ContactsRepository } = require('../repository')
 
 class ContactsService {
   constructor() {
@@ -8,34 +8,35 @@ class ContactsService {
     }
   }
 
-  async listContacts() {
-    const data = await this.repository.contacts.listContacts()
+  async listContacts(userId, query) {
+    const data = await this.repository.contacts.listContacts(userId, query)
+    const { docs: contacts, totalDocs: total, limit, page: pageNumber, favorite } = data
+    return { contacts, total, limit, pageNumber, favorite }
+  }
+
+  async getContactById(userId, id) {
+    const data = await this.repository.contacts.getContactById(userId, id)
     return data
   }
 
-  async getContactById(id) {
-    const data = await this.repository.contacts.getContactById(id)
+  async addContact(userId, body) {
+    const data = await this.repository.contacts.addContact(userId, body)
     return data
   }
 
-  async addContact(body) {
-    const data = await this.repository.contacts.addContact(body)
+  async updateContact(userId, id, body) {
+    const data = await this.repository.contacts.updateContact(userId, id, body)
     return data
   }
 
-  async updateContact(id, body) {
-    const data = await this.repository.contacts.updateContact(id, body)
-    return data
-  }
-
-  async removeContact(id) {
-    const data = await this.repository.contacts.removeContact(id)
+  async removeContact(userId, id) {
+    const data = await this.repository.contacts.removeContact(userId, id)
 
     return data
   }
 
-  async updateStatusContact(id, body) {
-    const data = await this.repository.contacts.updateStatusContact(id, body)
+  async updateStatusContact(userId, id, body) {
+    const data = await this.repository.contacts.updateStatusContact(userId, id, body)
     return data
   }
 }
