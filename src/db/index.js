@@ -1,12 +1,9 @@
 /* eslint-disable new-cap */
 
 const mongoose = require('mongoose')
-// const dotenv = require('dotenv')
-// dotenv.config()
-// const uriDb = process.env.URI_DB
-
-// console.log(uriDb)
-const uriDb = 'mongodb+srv://Magdegaben:Sonya2021GGT@cluster0.uiffc.mongodb.net/contactsNode?retryWrites=true&w=majority'
+const dotenv = require('dotenv')
+dotenv.config()
+const uriDb = process.env.URI_DB
 
 const db = new mongoose.connect(uriDb, {
   useUnifiedTopology: true,

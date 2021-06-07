@@ -90,10 +90,6 @@ const currentUser = async (req, res, next) => {
         data: { user },
       })
     }
-    next({
-      status: HttpCode.UNAUTHORIZED,
-      message: 'You should login first',
-    })
   } catch (error) {
     next(error)
   }
@@ -118,10 +114,6 @@ const subscriptionStatus = async (req, res, next) => {
         },
       })
     }
-    next({
-      status: HttpCode.UNAUTHORIZED,
-      message: 'You are not authorized',
-    })
   } catch (error) {
     next(error)
   }

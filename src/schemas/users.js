@@ -32,8 +32,6 @@ const userSchema = new Schema(
   { versionKey: false, timestamps: true }
 )
 
-// Function for validation email
-
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, bcrypt.genSaltSync(SALT_FACTOR))
