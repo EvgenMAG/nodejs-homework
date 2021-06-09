@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const HttpCode = require('../helpers/constants')
+const { HttpCode, Subscription } = require('../helpers/constants')
 
 const schemaCreateContact = Joi.object({
   name: Joi.string()
@@ -48,6 +48,28 @@ const shemaUpdateStatus = Joi.object({
   favorite: Joi.boolean().required(),
 })
 
+const schemaCreateUser = Joi.object({
+
+  password: Joi.string()
+    .min(6)
+    .max(14)
+    .required(),
+
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ['com', 'net', 'uk', 'gmail', 'yandex', 'mail', 'co'] },
+    })
+    .required(),
+  favorite: Joi.boolean().optional(),
+})
+
+const shemaUpdateSubscriptionStatus = Joi.object({
+  subscription: Joi.string()
+    .valid(Subscription.STARTER, Subscription.PRO, Subscription.BUSINESS)
+    .required(),
+})
+
 const validate = (shema, body, next) => {
   const { error } = shema.validate(body)
 
@@ -72,4 +94,12 @@ module.exports.validateUpdateContact = (req, _, next) => {
 
 module.exports.validateUpdateStatus = (req, _, next) => {
   return validate(shemaUpdateStatus, req.body, next)
+}
+
+module.exports.validateCreateUser = (req, _, next) => {
+  return validate(schemaCreateUser, req.body, next)
+}
+
+module.exports.validateStatusSubscription = (req, _, next) => {
+  return validate(shemaUpdateSubscriptionStatus, req.body, next)
 }

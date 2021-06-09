@@ -1,6 +1,9 @@
 const app = require('../src/app')
 const db = require('../src/db')
 
+const dotenv = require('dotenv')
+dotenv.config()
+
 const PORT = process.env.PORT || 3600
 
 db.then(() => {
