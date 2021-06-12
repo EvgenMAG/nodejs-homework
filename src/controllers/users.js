@@ -1,14 +1,15 @@
 
 const { HttpCode } = require('../helpers/constants')
-const { UserService, AuthService } = require('../services')
+const { UserService, AuthService, LocalUploadAvatarService , UploadService} = require('../services')
+const path = require('path')
+const fs = require('fs/promises')
+require('dotenv').config()
 
 const serviceUser = new UserService()
 const serviceAuth = new AuthService()
 
 const register = async (req, res, next) => {
-  const { password, email, subscription } = req.body
-  console.log(email)
-  console.log(password)
+  const { password, email, subscription, avatar } = req.body
 
   const user = await serviceUser.findByEmail(email)
   if (user) {
@@ -21,14 +22,15 @@ const register = async (req, res, next) => {
     })
   }
   try {
-    const newUser = await serviceUser.create({ password, email, subscription })
+    const newUser = await serviceUser.create({ password, email, subscription, avatar })
     return res.status(HttpCode.CREATED).json({
       Status: HttpCode.CREATED,
       ContentType: 'application / json',
       ResponseBody: {
         user: {
           email: newUser.email,
-          subscription: newUser.subscription
+          subscription: newUser.subscription,
+          avatar: newUser.avatar
         }
       }
     })
@@ -39,7 +41,6 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email, password } = req.body
-  console.log(req.body)
 
   try {
     const token = await serviceAuth.login({ email, password })
@@ -119,10 +120,65 @@ const subscriptionStatus = async (req, res, next) => {
   }
 }
 
+// //// ---------------LOCAL UPLOAD ---------//////
+
+const avatars = async (req, res, next) => {
+  try {
+    const id = req.user.id
+
+    const pathToUserFile = path.join(process.env.IMAGE_DIR, process.env.AVATAR_USERS_DIR)
+    console.log(id)
+    const uploads = new LocalUploadAvatarService(pathToUserFile)
+    const avatarUrl = await uploads.saveAvatar({ idUser: id, file: req.file })
+
+    try {
+      console.log(req.user.avatarURL)
+      await fs.unlink(path.join(pathToUserFile, req.user.avatarURL))
+    } catch (e) {
+      console.log(e.message)
+    }
+    await serviceUser.updateAvatar(id, avatarUrl)
+    return res.status(HttpCode.OK).json({
+      status: 'success',
+      code: HttpCode.OK,
+      data: {
+
+        avatarUrl
+      },
+    })
+  } catch (e) {
+    next(e)
+  }
+}
+
+// //// ---------------CLOUD UPLOAD ---------//////
+
+// const avatars = async (req, res, next) => {
+//   try {
+//     const id = req.user.id
+//     const uploads = new UploadService()
+//     const {idClaudAvatar,avatarUrl} = await uploads.saveAvatar(req.file.path,req.user.idClaudAvatar)
+    
+//       await fs.unlink(req.file.path)
+    
+//     await serviceUser.updateAvatar(id, avatarUrl, idClaudAvatar)
+//     return res.status(HttpCode.OK).json({
+//       status: 'success',
+//       code: HttpCode.OK,
+//       data: {
+//         avatarUrl
+//       },
+//     })
+//   } catch (e) {
+//     next(e)
+//   }
+// }
+
 module.exports = {
   register,
   login,
   logout,
   currentUser,
-  subscriptionStatus
+  subscriptionStatus,
+  avatars
 }
