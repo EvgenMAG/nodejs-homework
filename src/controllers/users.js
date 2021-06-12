@@ -1,6 +1,6 @@
 
 const { HttpCode } = require('../helpers/constants')
-const { UserService, AuthService, LocalUploadAvatarService , UploadService} = require('../services')
+const { UserService, AuthService, LocalUploadAvatarService, UploadService } = require('../services')
 const path = require('path')
 const fs = require('fs/promises')
 require('dotenv').config()
@@ -132,10 +132,8 @@ const avatars = async (req, res, next) => {
     const avatarUrl = await uploads.saveAvatar({ idUser: id, file: req.file })
 
     try {
-      console.log(req.user.avatarURL)
       await fs.unlink(path.join(pathToUserFile, req.user.avatarURL))
     } catch (e) {
-      console.log(e.message)
     }
     await serviceUser.updateAvatar(id, avatarUrl)
     return res.status(HttpCode.OK).json({
@@ -158,9 +156,9 @@ const avatars = async (req, res, next) => {
 //     const id = req.user.id
 //     const uploads = new UploadService()
 //     const {idClaudAvatar,avatarUrl} = await uploads.saveAvatar(req.file.path,req.user.idClaudAvatar)
-    
+
 //       await fs.unlink(req.file.path)
-    
+
 //     await serviceUser.updateAvatar(id, avatarUrl, idClaudAvatar)
 //     return res.status(HttpCode.OK).json({
 //       status: 'success',
