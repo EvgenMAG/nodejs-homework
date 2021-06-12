@@ -27,8 +27,8 @@ class UserRepository {
   }
 
   async getCurrentUser(id) {
-    const { name, email, subscription } = await this.model.findOne({ _id: id })
-    return { name, email, subscription }
+    const { email, subscription } = await this.model.findOne({ _id: id })
+    return { email, subscription }
   }
 
   async updateSubscriptionStatus(id, body) {
@@ -36,6 +36,14 @@ class UserRepository {
       { _id: id },
       { ...body },
       { new: true }
+    )
+    return user
+  }
+
+  async updateAvatarRepo(id, avatar, idClaudAvatar = null) {
+    const user = await this.model.findOneAndUpdate(
+      { _id: id },
+      { avatarURL: avatar, idClaudAvatar: idClaudAvatar },
     )
     return user
   }

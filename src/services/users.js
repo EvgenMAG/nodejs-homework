@@ -32,6 +32,11 @@ class UserService {
     const data = await this.repository.users.updateSubscriptionStatus(id, body)
     return data
   }
+
+  async updateAvatar(id, avatarUrl,idClaudAvatar) {
+    const data = await this.repository.users.updateAvatarRepo(id, avatarUrl, idClaudAvatar)
+    return data
+  }
 }
 
 module.exports = UserService

@@ -7,6 +7,9 @@ const ErrorHandler = require('./helpers/errorHandlers')
 const { apiLimit, jsonLimit } = require('./config/rateLimit.json')
 const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
+const path = require('path')
+
+require('dotenv').config()
 
 const app = express()
 
@@ -28,6 +31,13 @@ app.use(express.json({ limit: jsonLimit }))
 
 app.use('/api/', apiLimiter, require('./api_contacts'))
 
+app.use(express.static(path.join(process.env.IMAGE_DIR, process.env.AVATAR_USERS_DIR)))
+// app.use('/upload', upload.single('file'), async (req, res, next) => {
+//   console.log(req.file)
+//   console.log(req.body)
+//   res.redirect('/')
+// })
+
 app.use((req, res, next) => {
   res.status(HttpCode.NOT_FOUND).json({
     status: 'error',
@@ -38,7 +48,6 @@ app.use((req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-  console.log(err)
   const status = err.status ? err.status : HttpCode.INTERNAL_SERVER_ERROR
   res.status(status).json({
     status: status === 500 ? 'fail' : 'error',
