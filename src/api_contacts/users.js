@@ -5,7 +5,9 @@ const {
   logout,
   currentUser,
   subscriptionStatus,
-  avatars
+  avatars,
+  verify,
+  reVerifying
 
 } = require('../controllers/users')
 const { validateCreateUser, validateStatusSubscription } = require('../validation/contactsValidation')
@@ -26,5 +28,7 @@ router
     subscriptionStatus
   )
   .patch('/avatars', guard, upload.single('avatar'), avatars)
+  .get('/verify/:verificationToken', verify)
+  .post('/verify', reVerifying)
 
 module.exports = router
