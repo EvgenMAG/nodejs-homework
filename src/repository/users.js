@@ -13,7 +13,11 @@ class UserRepository {
 
   async findByEmail(email) {
     const user = await this.model.findOne({ email })
-    // console.log(result)
+    return user
+  }
+
+  async findByField(field) {
+    const user = await this.model.findOne(field)
     return user
   }
 

@@ -39,6 +39,57 @@ const register = async (req, res, next) => {
   }
 }
 
+const verify = async (req, res, next) => {
+  try {
+    const result = await serviceUser.verify(req.params)
+
+    if (result) {
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        data: { message: 'Verification is successful' },
+      })
+    } else {
+      return res.status(HttpCode.BAD_REQUEST).json({
+        status: 'Failed',
+        code: HttpCode.BAD_REQUEST,
+        data: { message: 'Your verification is failed. Contact to administration' },
+      })
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+const reVerifying = async (req, res, next) => {
+  try {
+    const { email } = req.body
+    const result = await serviceUser.reVerifying(email)
+
+    if (result === null) {
+      return next({
+        status: HttpCode.NOT_FOUND,
+        message: 'Your have not been registred yet. Please register!',
+      })
+    }
+
+    if (result) {
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        data: { message: 'Verification email sent' },
+      })
+    }
+
+    next({
+      status: HttpCode.BAD_REQUEST,
+      message: 'Verification has already been passed',
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 const login = async (req, res, next) => {
   const { email, password } = req.body
 
@@ -178,5 +229,7 @@ module.exports = {
   logout,
   currentUser,
   subscriptionStatus,
-  avatars
+  avatars,
+  verify,
+  reVerifying
 }
